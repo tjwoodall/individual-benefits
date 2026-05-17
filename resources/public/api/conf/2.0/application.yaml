@@ -327,8 +327,9 @@ components:
           description: An unordered list of one or more employments for which the taxpayer reported any benefits for the given tax year.
       description: Individual benefits summary
     childBenefitEntitlementResponse:
-      title: childBenefitEntitlement
+      type: object
       required:
         - childBenefitEntitlement
-      type: number
-      description: Child Benefit amount
+      properties:
+        childBenefitEntitlement:
+          type: number
