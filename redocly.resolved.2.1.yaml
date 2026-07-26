@@ -32,7 +32,7 @@ info:
 
     Payments are made towards the end of the calendar year, so data for a tax year will typically become available from around December within that tax year.
 
-    **Note:** If no payment data is held for the given NINO and tax year (including where the taxpayer opted out of the payment), HTTP status code 404 will be returned and the response body will contain the code `NOT_FOUND`.
+    **Note:** If no payment data is held for the given UTR and tax year (including where the taxpayer opted out of the payment), HTTP status code 404 will be returned and the response body will contain the code `NOT_FOUND`.
 
     # Authorisation
 
@@ -347,7 +347,7 @@ paths:
       security:
         - user-restricted:
             - read:individual-benefits
-  /individual-benefits/{nino}/winter-fuel-payment-amount/annual-summary/{taxYear}:
+  /individual-benefits/sa/{utr}/winter-fuel-payment-amount/annual-summary/{taxYear}:
     get:
       tags:
         - individual-benefits
@@ -355,15 +355,12 @@ paths:
       description: Fetches the total Winter Fuel Payment amount that an individual has received in a tax year. The specified `taxYear` must be the current filing year.
       operationId: getWinterFuelPaymentAmount
       parameters:
-        - name: nino
+        - name: utr
           in: path
-          description: The National Insurance Number for the individual.
+          description: The 10 digit self-assessment UTR for the individual.
           required: true
           style: simple
-          schema:
-            type: string
-            pattern: ^[A-Z]{2}[0-9]{6}[A-Z]$
-            example: SA123456A
+          schema: *ref_2
         - name: taxYear
           in: path
           description: The tax year for the data being retrieved.
@@ -407,11 +404,11 @@ paths:
                     type: object
                     properties: *ref_1
               examples:
-                invalidNino:
-                  description: Invalid NINO
+                invalidUtr:
+                  description: Invalid UTR
                   value:
-                    code: NINO_INVALID
-                    message: The provided NINO is invalid
+                    code: SA_UTR_INVALID
+                    message: The provided SA UTR is invalid
                 invalidTaxYear:
                   description: Invalid tax year
                   value:
@@ -429,7 +426,7 @@ paths:
                     properties: *ref_1
               examples:
                 unauthorisedUser:
-                  description: User not authorised to access data for given NINO
+                  description: User not authorised to access data for given UTR
                   value:
                     code: UNAUTHORIZED
                     message: Bearer token is missing or not authorized
@@ -445,7 +442,7 @@ paths:
                     properties: *ref_1
               examples:
                 unmatchedRecipient:
-                  description: Data is unavailable. Either an invalid tax year or NINO was specified, the individual is not entitled to Winter Fuel Payment, or the request was made outside of the data availability window. See the *Winter Fuel Payment data availability* section for more details.
+                  description: Data is unavailable. Either an invalid tax year or UTR was specified, the individual is not entitled to Winter Fuel Payment, or the request was made outside of the data availability window. See the *Winter Fuel Payment data availability* section for more details.
                   value:
                     code: NOT_FOUND
                     message: Resource was not found
